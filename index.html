@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RUMAH MENTARI — Simulasi Energi Surya & Termodinamika</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<section id="cover" class="cover">
+  <div class="cover-grid" aria-hidden="true"></div>
+  <div class="cover-card">
+    <p class="cover-eyebrow">Media Pembelajaran Fisika</p>
+    <h1 class="cover-title">RUMAH MENTARI</h1>
+    <p class="cover-sub">Simulasi interaktif yang menghubungkan energi Matahari, termodinamika rumah, perpindahan kalor, konsumsi listrik, dan biaya energi dalam satu sistem.</p>
+    <p class="cover-footnote">☀ Energi → 🔥 Termodinamika → ⚡ Listrik → 💰 Ekonomi</p>
+    <form id="cover-form" class="cover-form">
+      <label class="field"><span>Nama pemilik rumah</span><input type="text" id="owner-name" placeholder="Contoh: Nezha Iriany" required></label>
+      <label class="field"><span>Kelas</span><input type="text" id="owner-class" placeholder="Contoh: PESP 25" required></label>
+      <button type="submit" class="btn btn-primary btn-large">Masuk ke RUMAH MENTARI ☀</button>
+    </form>
+  </div>
+</section>
+
+<div id="app" class="app hidden">
+  <header class="app-header">
+    <div class="app-header-left">
+      <span class="sun-mark">☀</span>
+      <div>
+        <p class="app-title">RUMAH MENTARI</p>
+        <p class="app-owner">Pemilik: <span id="owner-name-display">—</span> · Kelas: <span id="owner-class-display">—</span></p>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="Navigasi utama">
+      <button class="tab-btn active" data-tab="beranda" aria-selected="true">Beranda</button>
+      <button class="tab-btn" data-tab="materi" aria-selected="false">Materi</button>
+      <button class="tab-btn" data-tab="simulasi" aria-selected="false">Simulasi</button>
+      <button class="tab-btn" data-tab="latihan" aria-selected="false">Latihan Soal</button>
+    </nav>
+  </header>
+
+  <main class="app-main">
+    <section id="tab-beranda" class="tab-panel active">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="hero-eyebrow">Selamat datang, <span id="hero-owner-name">Pengguna</span> ☀</p>
+          <h2 class="hero-title">Satu rumah. Empat aliran energi: Matahari, kalor, listrik, dan biaya.</h2>
+          <p class="hero-text">RUMAH MENTARI membantu kamu melihat bagaimana radiasi Matahari diubah menjadi listrik, bagaimana rumah menerima kalor, bagaimana AC bekerja, serta bagaimana seluruh proses tersebut memengaruhi konsumsi dan biaya listrik.</p>
+        </div>
+        <div class="hero-readout" id="hero-readout">
+          <div class="readout-row"><span>Suhu luar</span><strong>32°C</strong></div>
+          <div class="readout-row"><span>Suhu dalam</span><strong>24°C</strong></div>
+          <div class="readout-row"><span>Irradiansi</span><strong>850 W/m²</strong></div>
+          <div class="readout-row"><span>Produksi PV</span><strong>1,7 kW</strong></div>
+          <div class="readout-row"><span>Beban rumah</span><strong>1,2 kW</strong></div>
+          <div class="readout-row"><span>Beban pendinginan</span><strong>0,8 kW</strong></div>
+          <div class="readout-row highlight"><span>Surplus</span><strong>0,5 kW</strong></div>
+          <div class="readout-row highlight"><span>Biaya hari ini</span><strong>Rp 8.500</strong></div>
+        </div>
+      </div>
+      <div class="nav-cards">
+        <button class="nav-card" data-goto="materi"><span class="nav-card-icon">📘</span><span class="nav-card-title">Materi</span><p>Pelajari panel surya, energi, Hukum I dan II Termodinamika, suhu panel, perpindahan kalor, serta hubungan panel dengan rumah.</p></button>
+        <button class="nav-card" data-goto="simulasi"><span class="nav-card-icon">☀</span><span class="nav-card-title">Simulasi</span><p>Atur kondisi rumah, cuaca, panel, AC, peralatan, baterai, dan tarif listrik. Lihat hasil energi, kalor, produksi, dan biaya secara langsung.</p></button>
+        <button class="nav-card" data-goto="latihan"><span class="nav-card-icon">🧪</span><span class="nav-card-title">Latihan Soal</span><p>Uji pemahamanmu melalui soal bertingkat dari konsep dasar sampai analisis energi dan ekonomi RUMAH MENTARI.</p></button>
+      </div>
+    </section>
+
+    <section id="tab-materi" class="tab-panel">
+      <div class="materi-layout">
+        <nav class="materi-toc" id="materi-toc" aria-label="Daftar materi"></nav>
+        <div class="materi-content" id="materi-content"></div>
+      </div>
+    </section>
+
+    <section id="tab-simulasi" class="tab-panel">
+      <div class="sim-layout">
+        <div class="sim-inputs">
+          <details class="module" open>
+            <summary><span class="module-dot house"></span>Rumah</summary>
+            <div class="module-body">
+              <label class="field-row"><span>Luas lantai (m²)</span><input type="number" id="in-floorarea" value="60" min="10"></label>
+              <label class="field-row"><span>Tinggi ruangan (m)</span><input type="number" id="in-height" value="3" min="2" step="0.1"></label>
+              <label class="field-row"><span>Jumlah penghuni</span><input type="number" id="in-people" value="4" min="0"></label>
+              <label class="field-row"><span>Suhu luar (°C)</span><input type="range" id="in-tout" value="32" min="20" max="40"><output id="out-tout">32</output></label>
+              <label class="field-row"><span>Suhu dalam yang diinginkan (°C)</span><input type="range" id="in-tin" value="24" min="18" max="30"><output id="out-tin">24</output></label>
+            </div>
+          </details>
+
+          <details class="module">
+            <summary><span class="module-dot house"></span>Dinding, Jendela & Atap</summary>
+            <div class="module-body">
+              <label class="field-row"><span>Material dinding</span><select id="in-wallmat"><option value="0.03">Panel sandwich (k=0,03)</option><option value="0.15">Kayu (k=0,15)</option><option value="0.2">Bata ringan / AAC (k=0,2)</option><option value="0.8" selected>Bata merah (k=0,8)</option><option value="1.4">Beton (k=1,4)</option></select></label>
+              <label class="field-row"><span>Luas dinding (m²)</span><input type="number" id="in-wallarea" value="60" min="1"></label>
+              <label class="field-row"><span>Ketebalan dinding (m)</span><input type="number" id="in-wallthick" value="0.2" min="0.05" step="0.01"></label>
+              <label class="field-row"><span>Jenis kaca jendela</span><select id="in-glass"><option value="5.8|0.8">Kaca tunggal</option><option value="2.8|0.6" selected>Kaca ganda</option><option value="1.8|0.4">Kaca Low-E</option></select></label>
+              <label class="field-row"><span>Luas jendela (m²)</span><input type="number" id="in-winarea" value="10" min="0"></label>
+              <label class="field-row"><span>Luas atap (m²)</span><input type="number" id="in-roofarea" value="65" min="1"></label>
+              <label class="field-row"><span>Isolasi tambahan R (m²·K/W)</span><select id="in-insulation"><option value="0">Tidak ada (R=0)</option><option value="1">Rendah (R=1)</option><option value="2" selected>Sedang (R=2)</option><option value="3.5">Tinggi (R=3,5)</option></select></label>
+            </div>
+          </details>
+
+          <details class="module">
+            <summary><span class="module-dot sun"></span>Matahari & Cuaca</summary>
+            <div class="module-body">
+              <label class="field-row"><span>Irradiansi puncak (W/m²)</span><input type="range" id="in-irr" value="850" min="0" max="1000"><output id="out-irr">850</output></label>
+              <label class="field-row"><span>Kondisi cuaca</span><select id="in-weather"><option value="1" selected>☀ Cerah</option><option value="0.7">⛅ Berawan sebagian</option><option value="0.4">☁ Mendung</option><option value="0.2">🌧 Hujan</option></select></label>
+              <label class="field-row"><span>Jam Matahari efektif / hari</span><input type="range" id="in-sunhours" value="5" min="1" max="10"><output id="out-sunhours">5</output></label>
+              <label class="field-row"><span>Kecepatan angin (m/s)</span><input type="range" id="in-wind" value="2" min="0" max="10"><output id="out-wind">2</output></label>
+            </div>
+          </details>
+
+          <details class="module">
+            <summary><span class="module-dot sun"></span>Panel Surya</summary>
+            <div class="module-body">
+              <label class="field-row"><span>Jumlah panel</span><input type="range" id="in-panelcount" value="6" min="1" max="30"><output id="out-panelcount">6</output></label>
+              <label class="field-row"><span>Luas setiap panel (m²)</span><input type="number" id="in-panelarea" value="1.7" min="0.5" step="0.1"></label>
+              <label class="field-row"><span>Efisiensi acuan (%)</span><input type="range" id="in-eff" value="20" min="10" max="25"><output id="out-eff">20</output></label>
+              <label class="field-row"><span>Koefisien temperatur β (%/°C)</span><input type="range" id="in-beta" value="0.4" min="0" max="1" step="0.05"><output id="out-beta">0.40</output></label>
+            </div>
+          </details>
+
+          <details class="module">
+            <summary><span class="module-dot ac"></span>Pendingin (AC)</summary>
+            <div class="module-body">
+              <label class="field-row"><span>Koefisien kinerja AC (COP)</span><input type="range" id="in-cop" value="3" min="1.5" max="5" step="0.1"><output id="out-cop">3.0</output></label>
+              <label class="field-row"><span>Waktu AC / hari</span><input type="range" id="in-achours" value="8" min="0" max="24"><output id="out-achours">8</output></label>
+            </div>
+          </details>
+
+          <details class="module"><summary><span class="module-dot ac"></span>Peralatan Rumah</summary><div class="module-body" id="appliance-body"></div></details>
+
+          <details class="module">
+            <summary><span class="module-dot money"></span>Baterai</summary>
+            <div class="module-body">
+              <label class="field-row"><span>Kapasitas (kWh)</span><input type="range" id="in-battcap" value="0" min="0" max="20"><output id="out-battcap">0</output></label>
+              <label class="field-row"><span>Tingkat pengisian awal (%)</span><input type="range" id="in-soc" value="50" min="0" max="100"><output id="out-soc">50</output></label>
+            </div>
+          </details>
+
+          <details class="module">
+            <summary><span class="module-dot money"></span>Ekonomi</summary>
+            <div class="module-body">
+              <label class="field-row"><span>Tarif listrik (Rp/kWh)</span><input type="number" id="in-tariff" value="1500" min="0"></label>
+              <label class="field-row"><span>Harga per panel (Rp)</span><input type="number" id="in-panelprice" value="2500000" min="0"></label>
+              <label class="field-row"><span>Inverter (Rp)</span><input type="number" id="in-inverter" value="8000000" min="0"></label>
+              <label class="field-row"><span>Sistem baterai (Rp)</span><input type="number" id="in-battprice" value="0" min="0"></label>
+              <label class="field-row"><span>Pemasangan + dudukan (Rp)</span><input type="number" id="in-install" value="6000000" min="0"></label>
+              <label class="field-row"><span>Penurunan kinerja tahunan (%)</span><input type="range" id="in-degrad" value="0.5" min="0" max="2" step="0.1"><output id="out-degrad">0.5</output></label>
+            </div>
+          </details>
+          <button id="btn-simulate" class="btn btn-primary btn-large">Jalankan Simulasi</button>
+        </div>
+
+        <div class="sim-results">
+          <div class="environment-card">
+            <div class="environment-top"><div><h2>Kondisi Rumah Saat Ini</h2><div id="scene-caption" class="scene-caption">Cerah — sinar Matahari kuat dan panel menerima radiasi tinggi.</div></div><div id="weather-status" class="environment-status">☀ Cerah</div></div>
+            <div id="weather-scene" class="weather-scene weather-clear" aria-label="Ilustrasi kondisi cuaca rumah">
+              <div class="weather-sun"><span class="sun-ray ray-a"></span><span class="sun-ray ray-b"></span><span class="sun-ray ray-c"></span></div><div class="cloud one"></div><div class="cloud two"></div><div class="rain"></div>
+              <div class="house-illustration"><div class="tree left"></div><div class="tree right"></div><div class="house-roof"></div><div class="panel"><span class="panel-glint"></span></div><div class="house-body"><div class="window left"></div><div class="window right"></div><div class="door"></div><div class="house-glow"></div></div></div>
+            </div>
+          </div>
+
+          <div class="thermal-card">
+            <div class="thermal-heading">
+              <div>
+                <p class="module-heading">🌡️ Indikator Panas Rumah</p>
+                <p class="thermal-desc">Lihat bagaimana perbedaan suhu memengaruhi perpindahan kalor dan kebutuhan pendinginan.</p>
+              </div>
+              <div id="thermal-level" class="thermal-level">Normal</div>
+            </div>
+            <div class="thermal-main">
+              <div class="thermal-temp">
+                <span>Suhu luar</span><strong id="thermal-tout">—</strong>
+              </div>
+              <div class="thermal-arrow">ΔT <strong id="thermal-dt">—</strong></div>
+              <div class="thermal-temp">
+                <span>Suhu target</span><strong id="thermal-tin">—</strong>
+              </div>
+            </div>
+            <div class="thermal-meter"><div id="thermal-meter-fill"></div></div>
+            <div class="thermal-flow">
+              <div><span>🔥 Kalor masuk melalui dinding & jendela</span><strong id="thermal-qenvelope">—</strong></div>
+              <div><span>☀ Kalor dari radiasi Matahari & internal</span><strong id="thermal-qgain">—</strong></div>
+              <div><span>❄️ Beban pendinginan</span><strong id="thermal-qcool">—</strong></div>
+            </div>
+            <div class="thermal-chain">ΔT ↑ → perpindahan kalor ↑ → beban AC ↑ → konsumsi listrik ↑</div>
+          </div>
+
+          <div class="result-grid">
+            <div class="result-card solar"><p class="result-label">☀ Energi Surya</p><div class="result-line"><span>Produksi PV</span><strong id="r-epv">—</strong></div><div class="result-line"><span>Efisiensi panel</span><strong id="r-eta">—</strong></div><div class="result-line"><span>Suhu panel</span><strong id="r-tpanel">—</strong></div></div>
+            <div class="result-card house"><p class="result-label">🏠 Rumah</p><div class="result-line"><span>Kalor masuk</span><strong id="r-qtotal">—</strong></div><div class="result-line"><span>Beban pendinginan</span><strong id="r-qcool">—</strong></div><div class="result-line"><span>Konsumsi total</span><strong id="r-ehouse">—</strong></div></div>
+            <div class="result-card energy"><p class="result-label">⚡ Energi Listrik</p><div class="result-line"><span>Dari panel surya</span><strong id="r-frompv">—</strong></div><div class="result-line"><span>Dari baterai</span><strong id="r-frombattery">—</strong></div><div class="result-line"><span>Dari jaringan</span><strong id="r-fromgrid">—</strong></div><div class="result-line"><span>Kontribusi PV</span><strong id="r-coverage">—</strong></div><div class="result-line"><span>Self-sufficiency</span><strong id="r-selfsuff">—</strong></div></div>
+            <div class="result-card money"><p class="result-label">💰 Ekonomi</p><div class="result-line"><span>Biaya tanpa PV</span><strong id="r-costwithout">—</strong></div><div class="result-line"><span>Biaya dengan PV</span><strong id="r-costwith">—</strong></div><div class="result-line"><span>Waktu balik modal</span><strong id="r-payback">—</strong></div></div>
+          </div>
+
+          <div class="charts-grid">
+            <div class="chart-card"><p class="chart-title">Irradiansi sepanjang hari</p><div class="chart-wrap"><canvas id="chart-irr"></canvas></div></div>
+            <div class="chart-card"><p class="chart-title">Daya panel surya sepanjang hari</p><div class="chart-wrap"><canvas id="chart-pv"></canvas></div></div>
+            <div class="chart-card"><p class="chart-title">Sumber kalor yang masuk ke rumah</p><div class="chart-wrap"><canvas id="chart-heat"></canvas></div></div>
+            <div class="chart-card"><p class="chart-title">Produksi, konsumsi, dan energi dari jaringan</p><div class="chart-wrap"><canvas id="chart-balance"></canvas></div></div>
+            <div class="chart-card"><p class="chart-title">Biaya harian: tanpa dan dengan PV</p><div class="chart-wrap"><canvas id="chart-cost"></canvas></div></div>
+            <div class="chart-card"><p class="chart-title">Akumulasi penghematan selama 10 tahun</p><div class="chart-wrap"><canvas id="chart-projection"></canvas></div></div>
+          </div>
+
+          <div class="experiment-card">
+            <div class="experiment-head">
+              <div>
+                <p class="module-heading">🔬 Mode Eksperimen</p>
+                <p class="experiment-desc">Ubah <strong>satu variabel</strong>, jalankan percobaan, lalu amati bagaimana hasilnya berubah. Variabel lain tetap mengikuti kondisi simulasi terakhir.</p>
+              </div>
+              <div class="experiment-badge" id="experiment-count-badge">0 eksperimen</div>
+            </div>
+            <div class="experiment-controls">
+              <select id="experiment-select">
+                <option value="panelarea">Luas panel → produksi & biaya</option>
+                <option value="insulation">Isolasi → beban kalor</option>
+                <option value="weather">Cuaca → produksi & biaya</option>
+                <option value="paneltemp">Temperatur panel → efisiensi</option>
+                <option value="dt">Perbedaan suhu (ΔT) → beban pendinginan</option>
+              </select>
+              <button id="btn-experiment" class="btn btn-secondary">Jalankan Eksperimen</button>
+            </div>
+            <div class="experiment-question" id="experiment-question">🔎 <strong>Prediksi dulu:</strong> menurutmu, apa yang akan terjadi jika variabel diubah?</div>
+            <div class="experiment-preview" id="experiment-preview"></div>
+            <div id="experiment-output"></div>
+            <div class="experiment-conclusion hidden" id="experiment-conclusion"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-latihan" class="tab-panel">
+      <div id="quiz-intro" class="quiz-intro">
+        <h2>🧪 Latihan RUMAH MENTARI</h2>
+        <p>Uji pemahaman tentang energi surya, termodinamika, perpindahan kalor, AC, konsumsi listrik, dan ekonomi panel surya. Beberapa soal mengambil angka dari simulasi terakhir yang kamu jalankan.</p>
+        <div class="learning-progress">
+          <div class="progress-head"><span>🌱 Progres belajar</span><strong id="learning-progress-percent">0%</strong></div>
+          <div class="learning-progressbar"><div id="learning-progress-fill"></div></div>
+          <div class="progress-stats">
+            <span>🧪 <strong id="progress-experiments">0</strong> eksperimen</span>
+            <span>📝 <strong id="progress-quiz">Belum</strong> kuis</span>
+            <span>🏆 <strong id="progress-challenge">Belum</strong> tantangan</span>
+          </div>
+        </div>
+        <div class="challenge-card">
+          <div>
+            <p class="challenge-kicker">🏠 Tantangan Rumah Mentari</p>
+            <h3>Buat rumah lebih hemat energi</h3>
+            <p>Atur simulasi hingga <strong>coverage surya ≥ 80%</strong>, <strong>beban pendinginan ≤ 3.000 W</strong>, dan biaya dengan PV lebih rendah daripada tanpa PV.</p>
+          </div>
+          <button id="btn-go-challenge" class="btn btn-secondary">Ke Simulasi</button>
+        </div>
+        <button id="btn-start-quiz" class="btn btn-primary btn-large">Mulai Latihan</button>
+      </div>
+      <div id="quiz-play" class="quiz-play hidden"><div class="quiz-progressbar"><div class="quiz-progressfill" id="quiz-progressfill"></div></div><p class="quiz-position" id="quiz-position">Soal 1 / 10</p><div class="quiz-card"><p class="quiz-level" id="quiz-level">Level 1 · Konsep Dasar</p><div id="quiz-simulation-hint" class="quiz-simulation-hint hidden"></div><p class="quiz-question" id="quiz-question"></p><div class="quiz-options" id="quiz-options"></div><div class="quiz-feedback hidden" id="quiz-feedback"><p class="quiz-verdict" id="quiz-verdict"></p><p class="quiz-explanation" id="quiz-explanation"></p></div><div class="quiz-actions"><button id="btn-answer" class="btn btn-primary" disabled>Periksa Jawaban</button><button id="btn-next" class="btn btn-secondary hidden">Lanjut</button></div></div></div>
+      <div id="quiz-result" class="quiz-result hidden"><h2>🎓 Hasil Latihan</h2><p class="quiz-score" id="quiz-score-text">0 / 100</p><p class="quiz-stars" id="quiz-stars"></p><div class="quiz-breakdown" id="quiz-breakdown"></div><p class="quiz-badge" id="quiz-badge"></p><button id="btn-retry-quiz" class="btn btn-secondary">Ulangi Latihan</button></div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
